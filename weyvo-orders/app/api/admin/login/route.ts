@@ -1,2 +1,0 @@
-import {NextResponse} from 'next/server'; import {adminCookie,makeToken} from '@/lib/auth';
-export async function POST(req:Request){const {username,password}=await req.json();if(!process.env.ADMIN_USERNAME||username!==process.env.ADMIN_USERNAME||!process.env.ADMIN_PASSWORD||password!==process.env.ADMIN_PASSWORD)return NextResponse.json({error:'Invalid username or password'},{status:401});const r=NextResponse.json({ok:true});r.cookies.set(adminCookie,makeToken(),{httpOnly:true,secure:true,sameSite:'lax',path:'/',maxAge:60*60*24*7});return r}
