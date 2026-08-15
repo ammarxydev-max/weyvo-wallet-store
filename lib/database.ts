@@ -7,6 +7,12 @@ export async function ensureDb() {
   if (!process.env.POSTGRES_URL) throw new Error('Database connection is missing.');
   await sql`CREATE TABLE IF NOT EXISTS orders (id BIGSERIAL PRIMARY KEY,order_number TEXT UNIQUE NOT NULL,product TEXT NOT NULL,color TEXT NOT NULL,quantity INTEGER NOT NULL CHECK(quantity>0),unit_price INTEGER NOT NULL,total INTEGER NOT NULL,customer_name TEXT NOT NULL,phone TEXT NOT NULL,governorate TEXT NOT NULL,area TEXT NOT NULL,address TEXT NOT NULL,notes TEXT DEFAULT '',status TEXT NOT NULL DEFAULT 'New',created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());`;
   await sql`CREATE TABLE IF NOT EXISTS products (id BIGSERIAL PRIMARY KEY,name TEXT NOT NULL,slug TEXT UNIQUE NOT NULL,description TEXT DEFAULT '',price INTEGER NOT NULL,compare_price INTEGER,images TEXT[] DEFAULT ARRAY[]::TEXT[],category TEXT DEFAULT 'Wallets',featured BOOLEAN DEFAULT false,active BOOLEAN DEFAULT true,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());`;
+  await sql`CREATE TABLE IF NOT EXISTS app_settings (key TEXT PRIMARY KEY,value TEXT NOT NULL);`;
+  const { rows } = await sql`SELECT value FROM app_settings WHERE key='initial_wallet_price_migrated' LIMIT 1`;
+  if (!rows.length) {
+    await sql`UPDATE products SET price=649,updated_at=NOW() WHERE price=699`;
+    await sql`INSERT INTO app_settings(key,value) VALUES('initial_wallet_price_migrated','649') ON CONFLICT(key) DO NOTHING`;
+  }
 }
 
 export async function seedProducts() {
