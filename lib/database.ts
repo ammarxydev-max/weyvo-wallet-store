@@ -21,6 +21,7 @@ export async function seedProducts() {
     {name:'WEYVO Blue Edition',slug:'weyvo-blue-edition',description:'Deep blue finish for a distinctive everyday carry.',price:699,comparePrice:1299,images:['/blue.png','/hero.jpg'],featured:false}
   ];
   for (const p of products) {
-    await sql`INSERT INTO products(name,slug,description,price,compare_price,images,featured) VALUES(${p.name},${p.slug},${p.description},${p.price},${p.comparePrice},${p.images},${p.featured}) ON CONFLICT(slug) DO NOTHING`;
+    const imagesJson = JSON.stringify(p.images);
+    await sql`INSERT INTO products(name,slug,description,price,compare_price,images,featured) VALUES(${p.name},${p.slug},${p.description},${p.price},${p.comparePrice},${imagesJson}::jsonb,${p.featured}) ON CONFLICT(slug) DO NOTHING`;
   }
 }
