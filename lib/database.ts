@@ -14,11 +14,11 @@ export async function seedProducts() {
   const { rows } = await sql`SELECT COUNT(*)::int AS count FROM products`;
   if (Number(rows[0]?.count) > 0) return;
   const products: Array<{name:string;slug:string;description:string;price:number;comparePrice:number;images:string[];featured:boolean}> = [
-    {name:'WEYVO Smart Wallet',slug:'weyvo-smart-wallet',description:'Minimal everyday wallet with a premium finish, RFID protection and smart contact sharing.',price:699,comparePrice:1299,images:['/hero.jpg','/open.jpg','/cards.jpg','/nfc.jpg'],featured:true},
-    {name:'WEYVO Brown Edition',slug:'weyvo-brown-edition',description:'Classic brown finish for a refined everyday carry.',price:699,comparePrice:1299,images:['/brown.png','/hero.jpg'],featured:false},
-    {name:'WEYVO Black Edition',slug:'weyvo-black-edition',description:'Stealth black finish with a clean modern profile.',price:699,comparePrice:1299,images:['/black.png','/hero.jpg'],featured:false},
-    {name:'WEYVO Beige Edition',slug:'weyvo-beige-edition',description:'Soft beige finish designed for a premium minimal look.',price:699,comparePrice:1299,images:['/beige.png','/hero.jpg'],featured:false},
-    {name:'WEYVO Blue Edition',slug:'weyvo-blue-edition',description:'Deep blue finish for a distinctive everyday carry.',price:699,comparePrice:1299,images:['/blue.png','/hero.jpg'],featured:false}
+    {name:'WEYVO Smart Wallet',slug:'weyvo-smart-wallet',description:'Minimal everyday wallet with a premium finish, RFID protection and smart contact sharing.',price:649,comparePrice:1299,images:['/hero.jpg','/open.jpg','/cards.jpg','/nfc.jpg'],featured:true},
+    {name:'WEYVO Brown Edition',slug:'weyvo-brown-edition',description:'Classic brown finish for a refined everyday carry.',price:649,comparePrice:1299,images:['/brown.png','/hero.jpg'],featured:false},
+    {name:'WEYVO Black Edition',slug:'weyvo-black-edition',description:'Stealth black finish with a clean modern profile.',price:649,comparePrice:1299,images:['/black.png','/hero.jpg'],featured:false},
+    {name:'WEYVO Beige Edition',slug:'weyvo-beige-edition',description:'Soft beige finish designed for a premium minimal look.',price:649,comparePrice:1299,images:['/beige.png','/hero.jpg'],featured:false},
+    {name:'WEYVO Blue Edition',slug:'weyvo-blue-edition',description:'Deep blue finish for a distinctive everyday carry.',price:649,comparePrice:1299,images:['/blue.png','/hero.jpg'],featured:false}
   ];
   for (const p of products) {
     const imagesJson = JSON.stringify(p.images);
