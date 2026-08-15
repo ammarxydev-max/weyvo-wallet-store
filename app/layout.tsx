@@ -1,6 +1,7 @@
 import './globals.css';
 import './premium.css';
 import './upgrade.css';
+import './product-faq.css';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 export const metadata: Metadata={title:'WEYVO Smart Wallet',description:'WEYVO smart wallet orders'};
