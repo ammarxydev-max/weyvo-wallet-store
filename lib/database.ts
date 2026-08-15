@@ -1,41 +1,9 @@
 import { sql } from '@vercel/postgres';
-
-// Neon was connected with a custom prefix, so Vercel can expose STORAGE_URL
-// instead of the POSTGRES_URL expected by @vercel/postgres.
-const connectionString =
-  process.env.POSTGRES_URL ||
-  process.env.STORAGE_URL ||
-  process.env.DATABASE_URL;
-
-if (connectionString && !process.env.POSTGRES_URL) {
-  process.env.POSTGRES_URL = connectionString;
+const connectionString=process.env.POSTGRES_URL||process.env.STORAGE_URL||process.env.DATABASE_URL;
+if(connectionString&&!process.env.POSTGRES_URL) process.env.POSTGRES_URL=connectionString;
+export async function ensureDb(){
+ if(!process.env.POSTGRES_URL) throw new Error('Database connection is missing.');
+ await sql`CREATE TABLE IF NOT EXISTS orders (id BIGSERIAL PRIMARY KEY,order_number TEXT UNIQUE NOT NULL,product TEXT NOT NULL,color TEXT NOT NULL,quantity INTEGER NOT NULL CHECK(quantity>0),unit_price INTEGER NOT NULL,total INTEGER NOT NULL,customer_name TEXT NOT NULL,phone TEXT NOT NULL,governorate TEXT NOT NULL,area TEXT NOT NULL,address TEXT NOT NULL,notes TEXT DEFAULT '',status TEXT NOT NULL DEFAULT 'New',created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());`;
+ await sql`CREATE TABLE IF NOT EXISTS products (id BIGSERIAL PRIMARY KEY,name TEXT NOT NULL,slug TEXT UNIQUE NOT NULL,description TEXT DEFAULT '',price INTEGER NOT NULL,compare_price INTEGER,images TEXT[] DEFAULT ARRAY[]::TEXT[],category TEXT DEFAULT 'Wallets',featured BOOLEAN DEFAULT false,active BOOLEAN DEFAULT true,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());`;
 }
-
-export async function ensureDb() {
-  if (!process.env.POSTGRES_URL) {
-    throw new Error(
-      'Database connection is missing. Configure POSTGRES_URL or connect the Neon integration with the POSTGRES prefix.'
-    );
-  }
-
-  await sql`
-    CREATE TABLE IF NOT EXISTS orders (
-      id BIGSERIAL PRIMARY KEY,
-      order_number TEXT UNIQUE NOT NULL,
-      product TEXT NOT NULL,
-      color TEXT NOT NULL,
-      quantity INTEGER NOT NULL CHECK (quantity > 0),
-      unit_price INTEGER NOT NULL,
-      total INTEGER NOT NULL,
-      customer_name TEXT NOT NULL,
-      phone TEXT NOT NULL,
-      governorate TEXT NOT NULL,
-      area TEXT NOT NULL,
-      address TEXT NOT NULL,
-      notes TEXT DEFAULT '',
-      status TEXT NOT NULL DEFAULT 'New' CHECK (status IN ('New','Confirmed','Shipped','Delivered')),
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    );
-  `;
-}
+export async function seedProducts(){await ensureDb();const {rows}=await sql`SELECT COUNT(*)::int count FROM products`;if(rows[0]?.count)return;const products=[['WEYVO Smart Wallet','weyvo-smart-wallet','Minimal everyday wallet with a premium finish, RFID protection and smart contact sharing.',699,1299,['/hero.jpg','/open.jpg','/cards.jpg','/nfc.jpg'],true],['WEYVO Brown Edition','weyvo-brown-edition','Classic brown finish for a refined everyday carry.',699,1299,['/brown.png','/hero.jpg'],false],['WEYVO Black Edition','weyvo-black-edition','Stealth black finish with a clean modern profile.',699,1299,['/black.png','/hero.jpg'],false],['WEYVO Beige Edition','weyvo-beige-edition','Soft beige finish designed for a premium minimal look.',699,1299,['/beige.png','/hero.jpg'],false],['WEYVO Blue Edition','weyvo-blue-edition','Deep blue finish for a distinctive everyday carry.',699,1299,['/blue.png','/hero.jpg'],false]];for(const p of products)await sql`INSERT INTO products(name,slug,description,price,compare_price,images,featured) VALUES(${p[0]},${p[1]},${p[2]},${p[3]},${p[4]},${p[5]},${p[6]}) ON CONFLICT(slug) DO NOTHING`;}
