@@ -22,6 +22,6 @@ export async function seedProducts() {
   ];
   for (const p of products) {
     const imagesJson = JSON.stringify(p.images);
-    await sql`INSERT INTO products(name,slug,description,price,compare_price,images,featured) VALUES(${p.name},${p.slug},${p.description},${p.price},${p.comparePrice},${imagesJson}::jsonb,${p.featured}) ON CONFLICT(slug) DO NOTHING`;
+    await sql`INSERT INTO products(name,slug,description,price,compare_price,images,featured) VALUES(${p.name},${p.slug},${p.description},${p.price},${p.comparePrice},ARRAY(SELECT jsonb_array_elements_text(${imagesJson}::jsonb)),${p.featured}) ON CONFLICT(slug) DO NOTHING`;
   }
 }
