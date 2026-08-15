@@ -1,4 +1,5 @@
 import './globals.css';
+import './premium.css';
 import type { Metadata } from 'next';
 export const metadata: Metadata={title:'WEYVO Smart Wallet',description:'WEYVO smart wallet orders'};
 export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
