@@ -4,6 +4,7 @@ import './upgrade.css';
 import './product-faq.css';
 import './product-responsive.css';
 import './site-fix.css';
+import './editorial-fix.css';
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
