@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useState} from 'react';
-const colors=['Brown','Black','Beige','Blue'];
+const colors=['Brown','Black','Beige','Yellow','Blue'];
 const NFC_PRICE=100;
 const discountFor=(q:number)=>q>=3?.12:q===2?.08:0;
 export default function Checkout(){const[color,setColor]=useState('Brown'),[productSlug,setProductSlug]=useState('weyvo-smart-wallet'),[productName,setProductName]=useState('WEYVO Smart Wallet'),[price,setPrice]=useState(649),[qty,setQty]=useState(1),[nfcEnabled,setNfcEnabled]=useState(false),[nfcType,setNfcType]=useState('contact'),[more,setMore]=useState(false),[step,setStep]=useState(1),[done,setDone]=useState<any>(null),[loading,setLoading]=useState(false),[paymentMethod,setPaymentMethod]=useState('cod'),[paymentProof,setPaymentProof]=useState('');
